@@ -1,0 +1,66 @@
+{
+  "patient_name": "John Doe",
+  "medications": [
+    {
+      "id": 1,
+      "name": "Lisinopril",
+      "purpose": "Blood Pressure",
+      "dosage": "10 mg",
+      "schedule": [
+        {
+          "time": "08:00",
+          "taken": false
+        },
+        {
+          "time": "20:00",
+          "taken": false
+        }
+      ],
+      "instructions": "Take with water, with or without food",
+      "notes": "Monitor blood pressure weekly",
+      "start_date": "2024-01-01",
+      "prescribing_doctor": "Dr. Smith"
+    },
+    {
+      "id": 2,
+      "name": "Metformin",
+      "purpose": "Diabetes",
+      "dosage": "500 mg",
+      "schedule": [
+        {
+          "time": "08:00",
+          "taken": false
+        },
+        {
+          "time": "12:00",
+          "taken": false
+        },
+        {
+          "time": "18:00",
+          "taken": false
+        }
+      ],
+      "instructions": "Take with meals",
+      "notes": "May cause stomach upset initially",
+      "start_date": "2024-01-01",
+      "prescribing_doctor": "Dr. Johnson"
+    },
+    {
+      "id": 3,
+      "name": "Atorvastatin",
+      "purpose": "Cholesterol",
+      "dosage": "20 mg",
+      "schedule": [
+        {
+          "time": "21:00",
+          "taken": false
+        }
+      ],
+      "instructions": "Take at bedtime",
+      "notes": "Avoid grapefruit products",
+      "start_date": "2024-01-01",
+      "prescribing_doctor": "Dr. Smith"
+    }
+  ]
+
+}
