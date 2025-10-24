@@ -12,7 +12,6 @@ def init_session():
     if "current_input" not in st.session_state:
         st.session_state.current_input = ""
 
-
 # ---------- UI Style ----------
 STYLE = """
 <style>
@@ -39,9 +38,13 @@ STYLE = """
     border-radius: 8px;
     margin: 10px 0;
 }
+button[kind="primary"] {
+    background-color: #2E86AB !important;
+    color: white !important;
+    border-radius: 8px !important;
+}
 </style>
 """
-
 
 # ---------- Main ----------
 def main():
@@ -66,7 +69,6 @@ def main():
             st.rerun()
         if st.button("Clear chat"):
             st.session_state.messages = []
-            st.session_state.current_input = ""
             st.rerun()
 
         st.markdown("---")
@@ -92,29 +94,32 @@ def main():
     with col1:
         st.header("Chat with Assistant")
 
-        # Warning if meds due now
         if med_manager.get_current_medications():
             st.markdown('<div class="alert-box">🚨 You have medications due right now!</div>', unsafe_allow_html=True)
 
-        # Chat input — controlled via session_state.current_input
-        user_input = st.text_input(
-            "Type your message:",
-            value=st.session_state.current_input,
-            placeholder="Ask about your medications... (e.g. 'What should I take now?')",
-        )
+        # ✅ Chat input with "Send" button next to the text box
+        # clear_on_submit=True will clear the text input after a successful submit
+        with st.form(key="chat_form", clear_on_submit=True):
+            input_col, btn_col = st.columns([4, 1])
+            with input_col:
+                user_input = st.text_input(
+                    "Type your message:",
+                    key="chat_input",
+                    placeholder="Ask about your medications..."
+                )
+            with btn_col:
+                send = st.form_submit_button("Send")
 
-        if user_input.strip():
-            st.session_state.messages.append({"role": "user", "content": user_input})
-            with st.spinner("Thinking..."):
-                reply = assistant.run(user_input)
-            st.session_state.messages.append({"role": "assistant", "content": reply})
-
-            # ✅ safe reset (no direct widget key modification)
-            st.session_state.current_input = ""
-            st.rerun()
+            # Do NOT modify st.session_state["chat_input"] here — form will clear it.
+            if send and user_input.strip():
+                st.session_state.messages.append({"role": "user", "content": user_input})
+                with st.spinner("Thinking..."):
+                    reply = assistant.run(user_input)
+                st.session_state.messages.append({"role": "assistant", "content": reply})
+                # no st.session_state["chat_input"] = ""  (avoids StreamlitAPIException)
+                # no explicit st.rerun() needed — form submission already triggers rerun
 
         st.markdown("---")
-
         for msg in st.session_state.messages:
             css = "user-msg" if msg["role"] == "user" else "assistant-msg"
             prefix = "**You:** " if msg["role"] == "user" else ""
