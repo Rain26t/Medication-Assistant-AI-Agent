@@ -92,17 +92,18 @@ def main():
         if med_manager.get_current_medications():
             st.markdown('<div class="alert-box">🚨 You have medications due right now!</div>', unsafe_allow_html=True)
 
-        # ✅ NEW chat input logic (no spam + send button)
-        user_input = st.text_input("Type your message:", key="chat_input")
-        send = st.button("Send")
+        # ✅ Fixed chat input (Enter + Send + safe clearing)
+        with st.form(key="chat_form", clear_on_submit=True):
+            user_input = st.text_input("Type your message:", key="chat_input")
+            send = st.form_submit_button("Send")
 
-        if send and user_input.strip():
-            st.session_state.messages.append({"role": "user", "content": user_input})
-            with st.spinner("Thinking..."):
-                reply = assistant.run(user_input)
-            st.session_state.messages.append({"role": "assistant", "content": reply})
-            st.session_state.chat_input = ""
-            st.rerun()
+            if send and user_input.strip():
+                st.session_state.messages.append({"role": "user", "content": user_input})
+                with st.spinner("Thinking..."):
+                    reply = assistant.run(user_input)
+                st.session_state.messages.append({"role": "assistant", "content": reply})
+                st.session_state["chat_input"] = ""
+                st.rerun()
 
         st.markdown("---")
         for msg in st.session_state.messages:
