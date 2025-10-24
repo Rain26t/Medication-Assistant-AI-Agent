@@ -17,7 +17,7 @@ STYLE = """
 <style>
 .user-msg {
     background: #e7f3ff;
-    color: #000000;           /* ✅ black text for visibility */
+    color: #000000;
     padding: 12px;
     border-radius: 10px;
     margin: 8px 0;
@@ -25,7 +25,7 @@ STYLE = """
 }
 .assistant-msg {
     background: #f1f9f2;
-    color: #000000;           /* ✅ black text for visibility */
+    color: #000000;
     padding: 12px;
     border-radius: 10px;
     margin: 8px 0;
@@ -92,19 +92,16 @@ def main():
         if med_manager.get_current_medications():
             st.markdown('<div class="alert-box">🚨 You have medications due right now!</div>', unsafe_allow_html=True)
 
-        user_input = st.text_input(
-            "Type your message:",
-            value=st.session_state.current_input,
-            placeholder="Ask about your medications... (e.g. 'What should I take now?')",
-            key="chat_input"
-        )
+        # ✅ NEW chat input logic (no spam + send button)
+        user_input = st.text_input("Type your message:", key="chat_input")
+        send = st.button("Send")
 
-        if user_input.strip():
+        if send and user_input.strip():
             st.session_state.messages.append({"role": "user", "content": user_input})
             with st.spinner("Thinking..."):
                 reply = assistant.run(user_input)
             st.session_state.messages.append({"role": "assistant", "content": reply})
-            st.session_state.current_input = ""
+            st.session_state.chat_input = ""
             st.rerun()
 
         st.markdown("---")
@@ -126,7 +123,7 @@ def main():
                 <small>{s['dosage']} • {status}</small>
             </div>
             """, unsafe_allow_html=True)
-            
+
 
 if __name__ == "__main__":
     main()
