@@ -12,6 +12,7 @@ def init_session():
     if "current_input" not in st.session_state:
         st.session_state.current_input = ""
 
+
 # ---------- UI Style ----------
 STYLE = """
 <style>
@@ -41,6 +42,7 @@ STYLE = """
 </style>
 """
 
+
 # ---------- Main ----------
 def main():
     st.set_page_config(page_title="MediCare Companion", page_icon="💊", layout="wide")
@@ -64,6 +66,7 @@ def main():
             st.rerun()
         if st.button("Clear chat"):
             st.session_state.messages = []
+            st.session_state.current_input = ""
             st.rerun()
 
         st.markdown("---")
@@ -89,23 +92,29 @@ def main():
     with col1:
         st.header("Chat with Assistant")
 
+        # Warning if meds due now
         if med_manager.get_current_medications():
             st.markdown('<div class="alert-box">🚨 You have medications due right now!</div>', unsafe_allow_html=True)
 
-        # ✅ Fixed chat input (Enter + Send + safe clearing)
-        with st.form(key="chat_form", clear_on_submit=True):
-            user_input = st.text_input("Type your message:", key="chat_input")
-            send = st.form_submit_button("Send")
+        # Chat input — controlled via session_state.current_input
+        user_input = st.text_input(
+            "Type your message:",
+            value=st.session_state.current_input,
+            placeholder="Ask about your medications... (e.g. 'What should I take now?')",
+        )
 
-            if send and user_input.strip():
-                st.session_state.messages.append({"role": "user", "content": user_input})
-                with st.spinner("Thinking..."):
-                    reply = assistant.run(user_input)
-                st.session_state.messages.append({"role": "assistant", "content": reply})
-                st.session_state["chat_input"] = ""
-                st.rerun()
+        if user_input.strip():
+            st.session_state.messages.append({"role": "user", "content": user_input})
+            with st.spinner("Thinking..."):
+                reply = assistant.run(user_input)
+            st.session_state.messages.append({"role": "assistant", "content": reply})
+
+            # ✅ safe reset (no direct widget key modification)
+            st.session_state.current_input = ""
+            st.rerun()
 
         st.markdown("---")
+
         for msg in st.session_state.messages:
             css = "user-msg" if msg["role"] == "user" else "assistant-msg"
             prefix = "**You:** " if msg["role"] == "user" else ""
