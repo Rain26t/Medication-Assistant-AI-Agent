@@ -18,7 +18,7 @@ class MedicationAssistant:
 
         # 🧍 User profile (personalization)
         self.user_profile = {
-            "name": "Fahim",
+            "name": "Rain",
             "age": 29,
             "gender": "male",
             "medical_conditions": ["asthma"],
@@ -112,14 +112,14 @@ class MedicationAssistant:
     # ------------ LOCAL HELPERS ------------
     def _offline_reply(self, query: str) -> str:
         if "hello" in query or "hi" in query:
-            return "👋 Hi Fahim! How are you feeling today? Remember to stay hydrated. 💚"
+            return "👋 Hi Rain! How are you feeling today? Remember to stay hydrated. 💚"
         if "take" in query:
             meds = self.med_manager.get_current_medications()
             if not meds:
                 return "😊 You’re all up to date — no medications are due right now!"
             lines = [f"💊 {m['name']} — {m['dosage']} at {m['schedule_time']}" for m in meds]
             return "Here’s what’s due:\n" + "\n".join(lines)
-        return "🤖 I'm here to help with your medication schedule, Fahim. What would you like to check?"
+        return "🤖 I'm here to help with your medication schedule, Rain. What would you like to check?"
 
     def _show_schedule(self):
         sched = self.med_manager.get_todays_schedule()
