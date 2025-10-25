@@ -98,7 +98,6 @@ def main():
             st.markdown('<div class="alert-box">🚨 You have medications due right now!</div>', unsafe_allow_html=True)
 
         # ✅ Chat input with "Send" button next to the text box
-        # clear_on_submit=True will clear the text input after a successful submit
         with st.form(key="chat_form", clear_on_submit=True):
             input_col, btn_col = st.columns([4, 1])
             with input_col:
@@ -108,19 +107,19 @@ def main():
                     placeholder="Ask about your medications..."
                 )
             with btn_col:
-                send = st.form_submit_button("Send")
+                send = st.form_submit_button("Send 💬")
 
-            # Do NOT modify st.session_state["chat_input"] here — form will clear it.
             if send and user_input.strip():
                 st.session_state.messages.append({"role": "user", "content": user_input})
                 with st.spinner("Thinking..."):
                     reply = assistant.run(user_input)
                 st.session_state.messages.append({"role": "assistant", "content": reply})
-                # no st.session_state["chat_input"] = ""  (avoids StreamlitAPIException)
-                # no explicit st.rerun() needed — form submission already triggers rerun
+                # Input clears automatically due to clear_on_submit=True
 
         st.markdown("---")
-        for msg in st.session_state.messages:
+
+        # ✅ Display chat messages (newest at TOP)
+        for msg in reversed(st.session_state.messages):
             css = "user-msg" if msg["role"] == "user" else "assistant-msg"
             prefix = "**You:** " if msg["role"] == "user" else ""
             st.markdown(f'<div class="{css}">{prefix}{msg["content"]}</div>', unsafe_allow_html=True)
@@ -130,7 +129,7 @@ def main():
         st.header("Today's Schedule")
         schedule = med_manager.get_todays_schedule()
         for s in schedule:
-            color = "#d4edda" if s["taken"] else "#fff3cd"
+            color = "#000000" if s["taken"] else "#000000"
             status = "✅ Taken" if s["taken"] else "⏰ Upcoming"
             st.markdown(f"""
             <div style="background:{color};padding:8px;margin:4px 0;border-radius:5px;">

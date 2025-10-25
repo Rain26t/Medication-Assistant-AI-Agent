@@ -37,7 +37,7 @@
         },
         {
           "time": "18:00",
-          "taken": false
+          "taken": true
         }
       ],
       "instructions": "Take with meals",
@@ -62,5 +62,4 @@
       "prescribing_doctor": "Dr. Smith"
     }
   ]
-
 }
